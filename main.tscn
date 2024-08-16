@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxcny0gd1ej06"]
+
+[ext_resource type="PackedScene" uid="uid://bqur41wkeyeot" path="res://assets/pipe.glb" id="1_sww47"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.478)
+current = true
+
+[node name="pipe" parent="." instance=ExtResource("1_sww47")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.70581, 0.708401, 0, -0.708401, 0.70581, 0, 4.36562, 4.54381)
