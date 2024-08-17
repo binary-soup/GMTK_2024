@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bibdg0s3exd2i"]
+
+[ext_resource type="AudioStream" uid="uid://dpn8ttkcu8nrp" path="res://assets/sfx/step_1.wav" id="1_bi0cg"]
+[ext_resource type="Script" path="res://scenes/multi_sound.gd" id="2_sihw0"]
+
+[node name="MutilSound" type="AudioStreamPlayer"]
+stream = ExtResource("1_bi0cg")
+volume_db = -5.0
+max_polyphony = 3
+bus = &"SoundFX"
+script = ExtResource("2_sihw0")

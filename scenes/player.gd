@@ -11,6 +11,10 @@ extends CharacterBody3D
 @onready var eyes_anim: AnimationPlayer = $Neck/Head/Eyes/AnimationPlayer
 @onready var slide_timer: Timer = $SlideTimer
 
+# sfx
+@onready var slide_sfx: AudioStreamPlayer = $SoundFX/SlideSFX
+@onready var step_sfx: AudioStreamPlayer = $SoundFX/StepSFX
+
 # look constants
 @export var MOUSE_SENS := 0.005
 
@@ -49,12 +53,22 @@ var slide_dir : Vector2
 var head_bob_vec := Vector2()
 var head_bob_index := 0.0
 var head_bob_curr_intensity := 0.0
+var foot_step_last_sign := 1.0
 
 # move states
 enum MOVE_STATE {
 	WALK, SPRINT, CROUCH, SLIDE
 }
 var move_state := MOVE_STATE.WALK
+
+
+func _ready() -> void:
+	step_sfx.set_sounds([
+		preload("res://assets/sfx/step_1.wav"),
+		preload("res://assets/sfx/step_2.wav"),
+		preload("res://assets/sfx/step_3.wav"),
+		preload("res://assets/sfx/step_4.wav"),
+	])
 
 
 func _input(event: InputEvent) -> void:
@@ -131,6 +145,11 @@ func _handle_head_bob(delta: float) -> void:
 	
 	eyes.position.y = lerp(eyes.position.y, head_bob_vec.y * (head_bob_curr_intensity/2.0), delta * HEAD_BOB_LERP)
 	eyes.position.x = lerp(eyes.position.x, head_bob_vec.x * head_bob_curr_intensity, delta * HEAD_BOB_LERP)
+	
+	var s : float = sign(cos(head_bob_index/2.0)/2.0)
+	if s != foot_step_last_sign:
+		foot_step_last_sign = s
+		step_sfx.play_rand()
 
 
 func _handle_slide_looking(delta: float) -> void:
@@ -145,6 +164,7 @@ func _start_slide() -> void:
 	move_state = MOVE_STATE.SLIDE
 	slide_dir = _get_input_dir()
 	slide_timer.start()
+	slide_sfx.play()
 
 
 func _handle_crouching_height(delta: float) -> void:
