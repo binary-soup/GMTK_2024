@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://cea8sd3tqu26"]
+[gd_scene load_steps=13 format=3 uid="uid://cea8sd3tqu26"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_rhk6v"]
 [ext_resource type="AudioStream" uid="uid://b14dfvvbwwrio" path="res://assets/sfx/jump.wav" id="2_5rqcx"]
+[ext_resource type="PackedScene" uid="uid://by0781i21vldt" path="res://scenes/weapon.tscn" id="2_ybs1a"]
 [ext_resource type="AudioStream" uid="uid://c4rdyysxyd0f8" path="res://assets/sfx/land.wav" id="3_gftlr"]
 [ext_resource type="AudioStream" uid="uid://d4d1u4diepj3w" path="res://assets/sfx/slide.mp3" id="4_5tjws"]
 [ext_resource type="PackedScene" uid="uid://bibdg0s3exd2i" path="res://scenes/multi_sound.tscn" id="5_ytuv2"]
@@ -105,7 +106,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("CapsuleShape3D_x6s4p")
 disabled = true
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="CrouchRayCast" type="RayCast3D" parent="."]
 target_position = Vector3(0, 2, 0)
 
 [node name="Neck" type="Node3D" parent="."]
@@ -114,6 +115,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 [node name="Head" type="Node3D" parent="Neck"]
 
 [node name="Eyes" type="Node3D" parent="Neck/Head"]
+
+[node name="Weapon" parent="Neck/Head/Eyes" instance=ExtResource("2_ybs1a")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.2, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Neck/Head/Eyes"]
 

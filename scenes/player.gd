@@ -6,7 +6,7 @@ extends CharacterBody3D
 @onready var eyes: Node3D = $Neck/Head/Eyes
 @onready var standing_collision_shape: CollisionShape3D = $StandingCollisionShape
 @onready var crouching_collision_shape: CollisionShape3D = $CrouchingCollisionShape
-@onready var ray_cast_3d: RayCast3D = $RayCast3D
+@onready var crouch_ray_cast: RayCast3D = $CrouchRayCast
 @onready var camera_3d: Camera3D = $Neck/Head/Eyes/Camera3D
 @onready var eyes_anim: AnimationPlayer = $Neck/Head/Eyes/AnimationPlayer
 @onready var slide_timer: Timer = $SlideTimer
@@ -113,7 +113,7 @@ func _handle_move_state() -> void:
 		return
 	
 	# when existing crouch state, check for room above head
-	if move_state == MOVE_STATE.CROUCH and ray_cast_3d.is_colliding():
+	if move_state == MOVE_STATE.CROUCH and crouch_ray_cast.is_colliding():
 		return
 	
 	if Input.is_action_pressed("sprint"):
@@ -206,7 +206,7 @@ func _handle_y_movement(delta: float) -> void:
 
 
 func _handle_jump() -> void:
-	if Input.is_action_just_pressed("jump") and !ray_cast_3d.is_colliding():
+	if Input.is_action_just_pressed("jump") and !crouch_ray_cast.is_colliding():
 		velocity.y = JUMP_SPEED
 		eyes_anim.play("jump")
 		_end_slide()
