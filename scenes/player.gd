@@ -11,11 +11,8 @@ extends CharacterBody3D
 @onready var eyes_anim: AnimationPlayer = $Neck/Head/Eyes/AnimationPlayer
 @onready var slide_timer: Timer = $SlideTimer
 
-
 # look constants
 @export var MOUSE_SENS := 0.005
-@export var FREE_LOOK_LERP := 10.0
-@export var FREE_LOOK_TILT := PI/64
 
 # movement constants and vars
 @export var FLOOR_ACCELERATION := 0.5
@@ -58,7 +55,6 @@ enum MOVE_STATE {
 	WALK, SPRINT, CROUCH, SLIDE
 }
 var move_state := MOVE_STATE.WALK
-var free_looking := false
 
 
 func _input(event: InputEvent) -> void:
@@ -67,9 +63,9 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_look(relative : Vector2) -> void:
-	if free_looking:
+	if move_state == MOVE_STATE.SLIDE:
 		neck.rotate_y(-relative.x * MOUSE_SENS)
-		neck.rotation.y = clamp(neck.rotation.y, -2*PI/3, 2*PI/3)
+		neck.rotation.y = clamp(neck.rotation.y, -PI/2, PI/2)
 	else:
 		rotate_y(-relative.x * MOUSE_SENS)
 	
@@ -81,7 +77,7 @@ func _physics_process(delta: float) -> void:
 	_handle_move_state()
 	
 	_handle_head_bob(delta)
-	_handle_free_looking(delta)
+	_handle_slide_looking(delta)
 	_handle_crouching_height(delta)
 	
 	_handle_xz_movement()
@@ -137,17 +133,12 @@ func _handle_head_bob(delta: float) -> void:
 	eyes.position.x = lerp(eyes.position.x, head_bob_vec.x * head_bob_curr_intensity, delta * HEAD_BOB_LERP)
 
 
-func _handle_free_looking(delta: float) -> void:
-	if Input.is_action_pressed("free_look") or move_state == MOVE_STATE.SLIDE:
-		free_looking = true
-		if move_state == MOVE_STATE.SLIDE:
-			eyes.rotation.z = lerp(eyes.rotation.z, -SLIDE_TILT, delta * SLIDE_TILT_LERP)
-		else:
-			eyes.rotation.z = -neck.rotation.y * FREE_LOOK_TILT
+func _handle_slide_looking(delta: float) -> void:
+	if move_state == MOVE_STATE.SLIDE:
+		eyes.rotation.z = lerp(eyes.rotation.z, -SLIDE_TILT, delta * SLIDE_TILT_LERP)
 	else:
-		free_looking = false
-		neck.rotation.y = lerp(neck.rotation.y, 0.0, delta * FREE_LOOK_LERP)
-		eyes.rotation.z = lerp(eyes.rotation.z, 0.0, delta * FREE_LOOK_LERP)
+		neck.rotation.y = lerp(neck.rotation.y, 0.0, delta * SLIDE_TILT_LERP)
+		eyes.rotation.z = lerp(eyes.rotation.z, 0.0, delta * SLIDE_TILT_LERP)
 
 
 func _start_slide() -> void:
