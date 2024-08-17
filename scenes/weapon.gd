@@ -30,3 +30,13 @@ func _physics_process(_delta: float) -> void:
 	var origin := beam.global_position
 	
 	beam.scale.z = (hit - origin).length()
+	
+	var obj := ray_cast.get_collider()
+	if not "gs_val" in obj:
+		return
+	
+	if input < 0.0:
+		obj.gs_shrink(0.1)
+	else:
+		obj.gs_grow(0.1)
+	

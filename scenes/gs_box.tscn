@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://cla42wju8485e"]
+
+[ext_resource type="Script" path="res://scenes/gs_box.gd" id="1_o2r7w"]
+[ext_resource type="Texture2D" uid="uid://dqp66onvopebe" path="res://assets/texture_05.png" id="1_sh5cs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j6yud"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bwxun"]
+albedo_texture = ExtResource("1_sh5cs")
+
+[node name="GSBox" type="RigidBody3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+collision_layer = 3
+script = ExtResource("1_o2r7w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_j6yud")
+
+[node name="Mesh" type="CSGBox3D" parent="."]
+material = SubResource("StandardMaterial3D_bwxun")

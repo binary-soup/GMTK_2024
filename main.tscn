@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://cxcny0gd1ej06"]
+[gd_scene load_steps=11 format=3 uid="uid://cxcny0gd1ej06"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_wbl0i"]
 [ext_resource type="Texture2D" uid="uid://ggiy26baovxx" path="res://assets/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_a688t"]
 [ext_resource type="Texture2D" uid="uid://bpna1b7xota1h" path="res://assets/texture_07.png" id="2_nfujs"]
 [ext_resource type="PackedScene" uid="uid://cea8sd3tqu26" path="res://scenes/player.tscn" id="3_2dduu"]
 [ext_resource type="Script" path="res://pause_menu.gd" id="5_tl7ko"]
+[ext_resource type="PackedScene" uid="uid://cla42wju8485e" path="res://scenes/gs_box.tscn" id="6_oxglf"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_lcygp"]
 panorama = ExtResource("2_a688t")
@@ -54,3 +55,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.60098, 0.739045, 0)
 [node name="PauseMenu" type="Node" parent="."]
 process_mode = 3
 script = ExtResource("5_tl7ko")
+
+[node name="GSBox" parent="." instance=ExtResource("6_oxglf")]
+transform = Transform3D(0.999262, 0, 0.0384053, 0, 1, 0, -0.0384053, 0, 0.999262, -3.47275, 1.63634, -6.94017)
