@@ -40,12 +40,16 @@ shadow_enabled = true
 [node name="CSGBox3D" type="CSGBox3D" parent="Stage"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
+collision_layer = 17
+collision_mask = 0
 size = Vector3(20, 1, 20)
 material = SubResource("StandardMaterial3D_2nu0a")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0877521, 2.22533, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0877521, 1.96404, 0)
 use_collision = true
+collision_layer = 17
+collision_mask = 0
 size = Vector3(3, 1, 20)
 material = SubResource("StandardMaterial3D_2nu0a")
 

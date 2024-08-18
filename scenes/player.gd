@@ -10,6 +10,9 @@ extends CharacterBody3D
 @onready var camera_3d: Camera3D = $Neck/Head/Eyes/Camera3D
 @onready var eyes_anim: AnimationPlayer = $Neck/Head/Eyes/AnimationPlayer
 @onready var slide_timer: Timer = $SlideTimer
+@onready var grab_ray_cast: RayCast3D = $Neck/Head/GrabRayCast
+@onready var hand: Node3D = $Neck/Head/Hand
+@onready var ray_gun: Node3D = $Neck/Head/Eyes/RayGun
 
 # sfx
 @onready var slide_sfx: AudioStreamPlayer = $SoundFX/SlideSFX
@@ -25,9 +28,10 @@ extends CharacterBody3D
 @export var WALK_SPEED := 5.0
 @export var SPRINT_SPEED := 8.0
 @export var CROUCH_SPEED := 3.0
-@export var JUMP_SPEED := 4.5
+@export var JUMP_SPEED := 5.5
 
 var prev_velocity : Vector3
+var input_dir : Vector2
 
 # crouching constants
 @export var CROUCH_DEPTH := -0.5
@@ -55,6 +59,13 @@ var head_bob_index := 0.0
 var head_bob_curr_intensity := 0.0
 var foot_step_last_sign := 1.0
 
+# ray gun constants and vars
+@export var RAY_USAGE_DAMPENING := 0.5
+var ray_gun_input : float
+
+# throwing constants
+@export var THROW_STRENGTH := 3.0
+
 # move states
 enum MOVE_STATE {
 	WALK, SPRINT, CROUCH, SLIDE
@@ -77,17 +88,24 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_look(relative : Vector2) -> void:
+	var sens := MOUSE_SENS
+	if ray_gun_input != 0.0:
+		sens *= RAY_USAGE_DAMPENING
+	
 	if move_state == MOVE_STATE.SLIDE:
-		neck.rotate_y(-relative.x * MOUSE_SENS)
+		neck.rotate_y(-relative.x * sens)
 		neck.rotation.y = clamp(neck.rotation.y, -PI/2, PI/2)
 	else:
-		rotate_y(-relative.x * MOUSE_SENS)
+		rotate_y(-relative.x * sens)
 	
-	head.rotate_x(-relative.y * MOUSE_SENS)
+	head.rotate_x(-relative.y * sens)
 	head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
 
 
 func _physics_process(delta: float) -> void:
+	input_dir = Input.get_vector("left", "right", "forward", "back")
+	ray_gun_input = Input.get_vector("shrink_ray", "grow_ray", "shrink_ray", "grow_ray").x
+	
 	_handle_move_state()
 	
 	_handle_head_bob(delta)
@@ -96,6 +114,10 @@ func _physics_process(delta: float) -> void:
 	
 	_handle_xz_movement()
 	_handle_y_movement(delta)
+	
+	_handle_grabing()
+	_handle_throwing()
+	_handle_ray_gun()
 	
 	prev_velocity = velocity
 	move_and_slide()
@@ -106,7 +128,7 @@ func _handle_move_state() -> void:
 		return
 	
 	if Input.is_action_pressed("crouch"):
-		if move_state == MOVE_STATE.SPRINT and _get_input_dir() != Vector2.ZERO:
+		if move_state == MOVE_STATE.SPRINT and input_dir != Vector2.ZERO:
 			_start_slide()
 		else:
 			move_state = MOVE_STATE.CROUCH
@@ -124,7 +146,7 @@ func _handle_move_state() -> void:
 
 
 func _handle_head_bob(delta: float) -> void:
-	if !is_on_floor() or move_state == MOVE_STATE.SLIDE or _get_input_dir() == Vector2.ZERO:
+	if !is_on_floor() or move_state == MOVE_STATE.SLIDE or input_dir == Vector2.ZERO:
 		eyes.position.y = lerp(eyes.position.y, 0.0, delta * HEAD_BOB_LERP)
 		eyes.position.x = lerp(eyes.position.x, 0.0, delta * HEAD_BOB_LERP)
 		return
@@ -162,7 +184,7 @@ func _handle_slide_looking(delta: float) -> void:
 
 func _start_slide() -> void:
 	move_state = MOVE_STATE.SLIDE
-	slide_dir = _get_input_dir()
+	slide_dir = input_dir
 	slide_timer.start()
 	slide_sfx.play()
 
@@ -224,19 +246,15 @@ func _target_xz_velocity() -> Vector3:
 		_:
 			speed = WALK_SPEED
 	
-	var input_dir : Vector2
+	var input : Vector2
 	if move_state == MOVE_STATE.SLIDE:
-		input_dir = slide_dir
+		input = slide_dir
 	else:
-		input_dir = _get_input_dir()
+		input = input_dir
 	
-	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var direction := (transform.basis * Vector3(input.x, 0, input.y)).normalized()
 	
 	return Vector3(direction.x * speed, velocity.y, direction.z * speed)
-
-
-func _get_input_dir() -> Vector2:
-	return Input.get_vector("left", "right", "forward", "back")
 
 
 func _on_slide_timer_timeout() -> void:
@@ -249,3 +267,80 @@ func _end_slide() -> void:
 		
 	slide_timer.stop()
 	move_state = MOVE_STATE.CROUCH
+
+
+func _handle_grabing() -> void:
+	if not Input.is_action_just_pressed("grab"):
+		return
+	
+	if _object_in_hand():
+		_drop_object()
+		return
+	
+	if not grab_ray_cast.is_colliding():
+		return
+	
+	var obj : RigidBody3D = grab_ray_cast.get_collider()
+	if obj.is_grabable():
+		_grab_object(obj)
+
+
+func _handle_throwing() -> void:
+	if !_object_in_hand() or !Input.is_action_just_pressed("throw"):
+		return
+	
+	var obj := _drop_object()
+	obj.apply_impulse(Vector3.FORWARD * hand.global_basis.inverse() * THROW_STRENGTH)
+
+
+func _grab_object(obj : RigidBody3D) -> void:
+	obj.get_parent().remove_child(obj)
+	hand.add_child(obj)
+	
+	obj.freeze = true
+	obj.position = Vector3()
+	obj.set_collision_layer_value(2, false)
+
+
+func _drop_object() -> RigidBody3D:
+	var obj : RigidBody3D = hand.get_child(0)
+	hand.remove_child(obj)
+	
+	var parent := get_parent()
+	
+	obj.freeze = false
+	obj.set_collision_layer_value(2, true)
+	
+	parent.add_child(obj)
+	obj.position = parent.to_local(hand.global_position)
+	return obj
+
+
+func _object_in_hand() -> bool:
+	return hand.get_child_count() > 0
+
+
+func _handle_ray_gun() -> void:
+	if _object_in_hand():
+		return
+	
+	if ray_gun_input < 0.0:
+		ray_gun.fire_ray(ray_gun.RAY_TYPE.SHRINK)
+	elif ray_gun_input > 0.0:
+		ray_gun.fire_ray(ray_gun.RAY_TYPE.GROW)
+	else:
+		ray_gun.stop_ray()
+
+
+#func _on_weapon_hit(obj: Node3D, point: Vector3, delta : float) -> void:
+	#var pt1 := neck.to_local(obj.global_position)
+	#var pt2 := neck.to_local(point)
+	#
+	#var y := Vector2(pt1.x, pt1.z).angle_to(Vector2(pt2.x, pt2.z))
+	#rotation.y = lerp(rotation.y, rotation.y + y, delta * 20.0)
+	#
+	#var pt3 := head.to_local(obj.global_position)
+	#var pt4 := head.to_local(point)
+	#
+	#var x := Vector2(pt3.z, pt3.y).angle_to(Vector2(pt4.z, pt4.y))
+	#head.rotation.x = lerp(head.rotation.x, head.rotation.x + x, delta * 20.0)

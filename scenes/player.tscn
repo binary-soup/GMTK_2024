@@ -95,6 +95,8 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody3D"]
+collision_layer = 8
+collision_mask = 3
 script = ExtResource("1_rhk6v")
 
 [node name="StandingCollisionShape" type="CollisionShape3D" parent="."]
@@ -116,7 +118,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Eyes" type="Node3D" parent="Neck/Head"]
 
-[node name="Weapon" parent="Neck/Head/Eyes" instance=ExtResource("2_ybs1a")]
+[node name="RayGun" parent="Neck/Head/Eyes" instance=ExtResource("2_ybs1a")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.2, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Neck/Head/Eyes"]
@@ -126,6 +128,14 @@ root_node = NodePath("../../../..")
 libraries = {
 "": SubResource("AnimationLibrary_bq30g")
 }
+
+[node name="GrabRayCast" type="RayCast3D" parent="Neck/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+target_position = Vector3(0, 0, -1.8)
+collision_mask = 4
+
+[node name="Hand" type="Node3D" parent="Neck/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.491457, -1.42744)
 
 [node name="SlideTimer" type="Timer" parent="."]
 wait_time = 0.6

@@ -28,11 +28,13 @@ func gs_grow(speed: float) -> void:
 
 func _set_gs_val(val: float):
 	var size := Vector3(val, val, val)
-	mass = size.x * size.y * size.z
+	mass = val
 	
 	collision.scale = size
 	mesh.scale = size
-	var offset := -size/2.0
-	
 	mesh.material.uv1_scale = size
-	mesh.material.uv1_offset = offset
+	mesh.material.uv1_offset = -size/2.0 + Vector3(0.5, 0.5, 0.5)
+
+
+func is_grabable() -> bool:
+	return gs_val < 0.8

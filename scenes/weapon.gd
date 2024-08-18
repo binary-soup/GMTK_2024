@@ -9,17 +9,19 @@ extends Node3D
 var grow_mat := preload("res://assets/materials/grow_mat.tres")
 var shrink_mat := preload("res://assets/materials/shrink_mat.tres")
 
+enum RAY_TYPE {
+	GROW, SHRINK
+}
 
-func _physics_process(_delta: float) -> void:
-	var input := Input.get_vector("shrink_ray", "grow_ray", "shrink_ray", "grow_ray").x
-	if input == 0.0:
-		beam.visible = false
-		return
-	
-	if input < 0.0:
-		mesh.material = shrink_mat
-	else:
+func stop_ray() -> void:
+	beam.visible = false
+
+
+func fire_ray(ray_type: RAY_TYPE) -> void:
+	if ray_type == RAY_TYPE.GROW:
 		mesh.material = grow_mat
+	else:
+		mesh.material = shrink_mat
 	
 	beam.visible = true
 	if not ray_cast.is_colliding():
@@ -27,16 +29,13 @@ func _physics_process(_delta: float) -> void:
 		return
 	
 	var hit := ray_cast.get_collision_point()
-	var origin := beam.global_position
+	beam.scale.z = (hit - beam.global_position).length()
 	
-	beam.scale.z = (hit - origin).length()
-	
-	var obj := ray_cast.get_collider()
+	var obj : Node3D = ray_cast.get_collider()
 	if not "gs_val" in obj:
 		return
 	
-	if input < 0.0:
-		obj.gs_shrink(0.1)
-	else:
+	if ray_type == RAY_TYPE.GROW:
 		obj.gs_grow(0.1)
-	
+	else:
+		obj.gs_shrink(0.1)	
