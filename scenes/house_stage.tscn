@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7edatfuy3ibe"]
+
+[ext_resource type="PackedScene" uid="uid://bvlwyr8ojl7rr" path="res://static_box.tscn" id="1_2ntwy"]
+[ext_resource type="PackedScene" uid="uid://ca7kb3haw7d3n" path="res://scenes/objects/bed.tscn" id="2_mmdyh"]
+[ext_resource type="PackedScene" uid="uid://cntfhl6hllh6c" path="res://scenes/speaker.tscn" id="3_jplo5"]
+
+[node name="HouseStage" type="Node3D"]
+
+[node name="StaticBox" parent="." instance=ExtResource("1_2ntwy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.128845, 0, 0)
+size = Vector3(20, 1, 20)
+
+[node name="Bed" parent="." instance=ExtResource("2_mmdyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.747392, 0)
+
+[node name="Speaker" parent="." instance=ExtResource("3_jplo5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.07281, 1.57417, 0)

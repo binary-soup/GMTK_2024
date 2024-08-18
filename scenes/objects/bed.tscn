@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://ca7kb3haw7d3n"]
+
+[ext_resource type="PackedScene" uid="uid://vlv4c6xjblbl" path="res://assets/models/bed_1.glb" id="1_sbeyu"]
+[ext_resource type="Script" path="res://scenes/objects/bed.gd" id="1_vkfxp"]
+[ext_resource type="Script" path="res://scenes/gs_node.gd" id="3_upqf4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yvh8r"]
+size = Vector3(2.00873, 1.08887, 4.01355)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d5gwl"]
+size = Vector3(1.84091, 0.619629, 3.31372)
+
+[node name="Bed" type="RigidBody3D"]
+collision_layer = 22
+collision_mask = 3
+script = ExtResource("1_vkfxp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00338745, 0.221191, -0.000305176)
+shape = SubResource("BoxShape3D_yvh8r")
+
+[node name="Mesh" parent="CollisionShape3D" instance=ExtResource("1_sbeyu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00436401, -0.0654859, 0.00144958)
+
+[node name="BouncePad" type="Area3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00338745, -0.221191, 0.000305176)
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CollisionShape3D/BouncePad"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00730896, 0.470466, -0.109497)
+shape = SubResource("BoxShape3D_d5gwl")
+
+[node name="GSNode" type="Node3D" parent="."]
+script = ExtResource("3_upqf4")
+GS_MAX_VAL = 1.5
+GS_MIN_VAL = 0.2
+MAX_GRAB_SIZE = 0.3
+
+[connection signal="body_entered" from="CollisionShape3D/BouncePad" to="." method="_on_bounce_pad_body_entered"]
+[connection signal="body_exited" from="CollisionShape3D/BouncePad" to="." method="_on_bounce_pad_body_exited"]
+[connection signal="gs_val_changed" from="GSNode" to="." method="_on_gs_node_gs_val_changed"]

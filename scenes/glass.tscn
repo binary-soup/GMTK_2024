@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3vauentysmv4"]
+
+[ext_resource type="Texture2D" uid="uid://omayqgjed4ur" path="res://assets/glass.png" id="1_1cg7h"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q3wh4"]
+transparency = 1
+albedo_texture = ExtResource("1_1cg7h")
+
+[node name="Glass" type="CSGBox3D"]
+use_collision = true
+collision_mask = 0
+material = SubResource("StandardMaterial3D_q3wh4")

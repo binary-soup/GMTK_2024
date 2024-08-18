@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cla42wju8485e"]
+[gd_scene load_steps=6 format=3 uid="uid://cla42wju8485e"]
 
 [ext_resource type="Script" path="res://scenes/gs_box.gd" id="1_o2r7w"]
 [ext_resource type="Texture2D" uid="uid://dqp66onvopebe" path="res://assets/texture_05.png" id="1_sh5cs"]
+[ext_resource type="Script" path="res://scenes/gs_node.gd" id="3_qn8x0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j6yud"]
 
@@ -17,5 +18,11 @@ script = ExtResource("1_o2r7w")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_j6yud")
 
-[node name="Mesh" type="CSGBox3D" parent="."]
+[node name="Mesh" type="CSGBox3D" parent="CollisionShape3D"]
 material = SubResource("StandardMaterial3D_bwxun")
+
+[node name="GSNode" type="Node3D" parent="CollisionShape3D"]
+script = ExtResource("3_qn8x0")
+GS_MAX_VAL = 4.0
+
+[connection signal="gs_val_changed" from="CollisionShape3D/GSNode" to="." method="_on_gs_node_gs_val_changed"]

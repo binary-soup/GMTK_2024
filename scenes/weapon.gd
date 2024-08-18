@@ -31,11 +31,15 @@ func fire_ray(ray_type: RAY_TYPE) -> void:
 	var hit := ray_cast.get_collision_point()
 	beam.scale.z = (hit - beam.global_position).length()
 	
-	var obj : Node3D = ray_cast.get_collider()
-	if not "gs_val" in obj:
+	var gs_obj : GSNode = _get_gs_obj()
+	if !gs_obj:
 		return
 	
 	if ray_type == RAY_TYPE.GROW:
-		obj.gs_grow(0.1)
+		gs_obj.grow(0.1)
 	else:
-		obj.gs_shrink(0.1)	
+		gs_obj.shrink(0.1)
+
+
+func _get_gs_obj() -> GSNode:
+	return ray_cast.get_collider().find_child("GSNode")

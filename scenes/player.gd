@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name Player
 
 # nodes
 @onready var neck: Node3D = $Neck
@@ -28,7 +29,9 @@ extends CharacterBody3D
 @export var WALK_SPEED := 5.0
 @export var SPRINT_SPEED := 8.0
 @export var CROUCH_SPEED := 3.0
+
 @export var JUMP_SPEED := 5.5
+var jump_boost := 0.0
 
 var prev_velocity : Vector3
 var input_dir : Vector2
@@ -71,6 +74,10 @@ enum MOVE_STATE {
 	WALK, SPRINT, CROUCH, SLIDE
 }
 var move_state := MOVE_STATE.WALK
+
+
+func set_jump_boost(val: float) -> void:
+	jump_boost = val
 
 
 func _ready() -> void:
@@ -221,7 +228,7 @@ func _handle_y_movement(delta: float) -> void:
 	
 	# on_floor
 	
-	if prev_velocity.y < 0.0:
+	if prev_velocity.y < 0.0:	
 		eyes_anim.play("land")
 	
 	_handle_jump()
@@ -229,7 +236,8 @@ func _handle_y_movement(delta: float) -> void:
 
 func _handle_jump() -> void:
 	if Input.is_action_just_pressed("jump") and !crouch_ray_cast.is_colliding():
-		velocity.y = JUMP_SPEED
+		velocity.y = JUMP_SPEED + jump_boost
+		
 		eyes_anim.play("jump")
 		_end_slide()
 
@@ -280,9 +288,15 @@ func _handle_grabing() -> void:
 	if not grab_ray_cast.is_colliding():
 		return
 	
-	var obj : RigidBody3D = grab_ray_cast.get_collider()
-	if obj.is_grabable():
+	var obj = grab_ray_cast.get_collider()
+	var gs_obj := _get_gs_obj(obj)
+	
+	if obj and gs_obj.is_grabbable():
 		_grab_object(obj)
+
+
+func _get_gs_obj(parent: Node3D) -> GSNode:
+	return parent.find_child("GSNode")
 
 
 func _handle_throwing() -> void:

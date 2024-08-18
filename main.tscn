@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://main.gd" id="1_wbl0i"]
 [ext_resource type="Texture2D" uid="uid://ggiy26baovxx" path="res://assets/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_a688t"]
 [ext_resource type="PackedScene" uid="uid://cea8sd3tqu26" path="res://scenes/player.tscn" id="3_2dduu"]
-[ext_resource type="PackedScene" uid="uid://dtx4fln5ixibm" path="res://scenes/stages/stage_1.tscn" id="4_wsbnj"]
+[ext_resource type="PackedScene" uid="uid://c7edatfuy3ibe" path="res://scenes/house_stage.tscn" id="4_syopl"]
 [ext_resource type="Script" path="res://pause_menu.gd" id="5_tl7ko"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_lcygp"]
@@ -35,7 +35,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0772581, 0.739045, 7.41121)
 
 [node name="Stages" type="Node3D" parent="."]
 
-[node name="Stage1" parent="Stages" instance=ExtResource("4_wsbnj")]
+[node name="HouseStage" parent="Stages" instance=ExtResource("4_syopl")]
 
 [node name="PauseMenu" type="Node" parent="."]
 process_mode = 3

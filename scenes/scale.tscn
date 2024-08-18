@@ -1,0 +1,89 @@
+[gd_scene load_steps=11 format=3 uid="uid://ti8oiqal5vwg"]
+
+[ext_resource type="PackedScene" uid="uid://b3vauentysmv4" path="res://scenes/glass.tscn" id="1_kf3ay"]
+[ext_resource type="Script" path="res://scenes/scale.gd" id="1_npauk"]
+[ext_resource type="Texture2D" uid="uid://cmxp7e7bg3rv" path="res://assets/counter_weight.png" id="2_863sg"]
+[ext_resource type="Texture2D" uid="uid://ddl2y2vh3ugi8" path="res://assets/lift.png" id="3_3cmtg"]
+[ext_resource type="Script" path="res://scenes/gs_node.gd" id="3_rhwr0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mlbdo"]
+albedo_texture = ExtResource("2_863sg")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gssck"]
+albedo_texture = ExtResource("3_3cmtg")
+
+[sub_resource type="Animation" id="Animation_jheub"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CounterWeight")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -2, 9.5, 0)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Lift")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 2, 0.5, 0)
+
+[sub_resource type="Animation" id="Animation_t8fdu"]
+resource_name = "move"
+length = 3.0
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CounterWeight")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -2, 9.5, 0, 3, 1, -2, 0.5, 0)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Lift")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 2, 0.5, 0, 3, 1, 2, 9.5, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_f3lc6"]
+_data = {
+"RESET": SubResource("Animation_jheub"),
+"move": SubResource("Animation_t8fdu")
+}
+
+[node name="Scale" type="Node3D"]
+script = ExtResource("1_npauk")
+
+[node name="Glass" parent="." instance=ExtResource("1_kf3ay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+size = Vector3(1, 10, 3)
+
+[node name="CounterWeight" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 9.5, 0)
+use_collision = true
+collision_layer = 17
+collision_mask = 0
+size = Vector3(0.5, 0.5, 0.5)
+material = SubResource("StandardMaterial3D_mlbdo")
+
+[node name="GSNode" type="Node3D" parent="CounterWeight"]
+script = ExtResource("3_rhwr0")
+GS_MAX_VAL = 3.0
+GS_MIN_VAL = 1.0
+
+[node name="Lift" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
+use_collision = true
+collision_layer = 17
+collision_mask = 0
+size = Vector3(3, 1, 3)
+material = SubResource("StandardMaterial3D_gssck")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_f3lc6")
+}
+
+[connection signal="gs_val_changed" from="CounterWeight/GSNode" to="." method="_on_gs_node_gs_val_changed"]

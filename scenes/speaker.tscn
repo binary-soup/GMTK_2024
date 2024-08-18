@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://cntfhl6hllh6c"]
+
+[ext_resource type="Script" path="res://scenes/speaker.gd" id="1_hulo3"]
+[ext_resource type="Script" path="res://scenes/gs_node.gd" id="2_vsnrk"]
+[ext_resource type="AudioStream" uid="uid://bcsv85dbvrnxo" path="res://assets/rhythm_factory.mp3" id="3_2et3l"]
+[ext_resource type="PackedScene" uid="uid://c8isvdonwei25" path="res://assets/models/speaker.glb" id="4_ogccu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bpb7c"]
+size = Vector3(0.517462, 0.995435, 0.50625)
+
+[node name="Speaker" type="RigidBody3D"]
+collision_layer = 22
+collision_mask = 3
+script = ExtResource("1_hulo3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_bpb7c")
+
+[node name="GSNode" type="Node3D" parent="CollisionShape3D"]
+script = ExtResource("2_vsnrk")
+GS_MIN_VAL = 0.25
+MAX_GRAB_SIZE = 0.4
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="CollisionShape3D"]
+transform = Transform3D(-0.165564, 0, -0.986199, 0, 1, 0, 0.986199, 0, -0.165564, 0.305265, -0.0223622, -0.0272104)
+stream = ExtResource("3_2et3l")
+volume_db = -20.0
+unit_size = 15.0
+max_db = -10.0
+autoplay = true
+
+[node name="Mesh" parent="CollisionShape3D" instance=ExtResource("4_ogccu")]
+
+[connection signal="gs_val_changed" from="CollisionShape3D/GSNode" to="." method="_on_gs_node_gs_val_changed"]
