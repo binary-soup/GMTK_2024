@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtx4fln5ixibm"]
+
+[ext_resource type="PackedScene" uid="uid://bvlwyr8ojl7rr" path="res://static_box.tscn" id="1_0h53x"]
+[ext_resource type="PackedScene" uid="uid://cla42wju8485e" path="res://scenes/gs_box.tscn" id="2_mb10r"]
+[ext_resource type="PackedScene" uid="uid://cntfhl6hllh6c" path="res://scenes/radio.tscn" id="3_mrj7y"]
+
+[node name="Stage1" type="Node3D"]
+
+[node name="Floor" parent="." instance=ExtResource("1_0h53x")]
+size = Vector3(10, 1, 16)
+
+[node name="Ledge" parent="." instance=ExtResource("1_0h53x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -14.5)
+size = Vector3(10, 5, 13)
+
+[node name="Ledge2" parent="." instance=ExtResource("1_0h53x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, -23)
+size = Vector3(10, 3.5, 4)
+
+[node name="LeftWall" parent="." instance=ExtResource("1_0h53x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.38012, 5.5235, -7.01589)
+size = Vector3(1, 10, 30)
+
+[node name="RightWall" parent="." instance=ExtResource("1_0h53x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 5.5, -7)
+size = Vector3(1, 10, 30)
+
+[node name="GSBox" parent="." instance=ExtResource("2_mb10r")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 1.5, -7)
+GS_MAX_VAL = 4.0
+
+[node name="Speaker" parent="." instance=ExtResource("3_mrj7y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.55291, -13.5)
+GS_MAX_VAL = 4.0
+
+[node name="StaticBox" parent="." instance=ExtResource("1_0h53x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -13.5)

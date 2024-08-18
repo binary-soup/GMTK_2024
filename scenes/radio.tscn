@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://cntfhl6hllh6c"]
+
+[ext_resource type="AudioStream" uid="uid://bcsv85dbvrnxo" path="res://assets/rhythm_factory.mp3" id="1_06eo5"]
+[ext_resource type="Script" path="res://scenes/radio.gd" id="1_i34ts"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bpb7c"]
+size = Vector3(0.7, 0.7, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ncjdp"]
+albedo_color = Color(0.446777, 0.446777, 0.446777, 1)
+
+[node name="Radio" type="RigidBody3D"]
+collision_layer = 22
+collision_mask = 3
+script = ExtResource("1_i34ts")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+shape = SubResource("BoxShape3D_bpb7c")
+
+[node name="Mesh" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+size = Vector3(0.7, 0.7, 0.7)
+material = SubResource("StandardMaterial3D_ncjdp")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.376658)
+stream = ExtResource("1_06eo5")
+volume_db = -20.0
+unit_size = 15.0
+max_db = -10.0
+autoplay = true

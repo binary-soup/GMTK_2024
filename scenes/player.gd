@@ -60,7 +60,7 @@ var head_bob_curr_intensity := 0.0
 var foot_step_last_sign := 1.0
 
 # ray gun constants and vars
-@export var RAY_USAGE_DAMPENING := 0.5
+@export var RAY_USAGE_DAMPENING := 0.3
 var ray_gun_input : float
 
 # throwing constants
@@ -303,6 +303,8 @@ func _grab_object(obj : RigidBody3D) -> void:
 
 
 func _drop_object() -> RigidBody3D:
+	# TODO: only drop if object is in bounds
+	
 	var obj : RigidBody3D = hand.get_child(0)
 	hand.remove_child(obj)
 	
