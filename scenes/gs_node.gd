@@ -1,6 +1,7 @@
 extends Node3D
 class_name GSNode
 
+@warning_ignore("unused_signal")
 signal gs_val_changed(val: float)
 
 # gs constants

@@ -14,6 +14,6 @@ func _on_throw_death_plane_body_entered(body: Node3D) -> void:
 		body.freeze = false
 
 
-func _on_commentarry_trigger_body_entered(body: Node3D) -> void:
+func _on_commentarry_trigger_body_entered(_body: Node3D) -> void:
 	audio_stream_player.play()
 	collision_shape.set_deferred("disabled", true)
