@@ -1,9 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cxcny0gd1ej06"]
+[gd_scene load_steps=10 format=3 uid="uid://cxcny0gd1ej06"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_wbl0i"]
 [ext_resource type="Texture2D" uid="uid://ggiy26baovxx" path="res://assets/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_a688t"]
 [ext_resource type="PackedScene" uid="uid://cea8sd3tqu26" path="res://scenes/player.tscn" id="3_2dduu"]
-[ext_resource type="PackedScene" uid="uid://c7edatfuy3ibe" path="res://scenes/house_stage.tscn" id="4_syopl"]
+[ext_resource type="PackedScene" uid="uid://dtx4fln5ixibm" path="res://scenes/stages/stage_1.tscn" id="4_hiy5t"]
 [ext_resource type="Script" path="res://pause_menu.gd" id="5_tl7ko"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_lcygp"]
@@ -18,6 +18,9 @@ sky = SubResource("Sky_nvxr6")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tfvpp"]
+plane = Plane(0, 1, 0, -30)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_wbl0i")
 
@@ -31,12 +34,24 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("3_2dduu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0772581, 0.739045, 7.41121)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0772581, 2.39732, 6.29956)
 
 [node name="Stages" type="Node3D" parent="."]
 
-[node name="HouseStage" parent="Stages" instance=ExtResource("4_syopl")]
+[node name="Stage1" parent="Stages" instance=ExtResource("4_hiy5t")]
 
 [node name="PauseMenu" type="Node" parent="."]
 process_mode = 3
 script = ExtResource("5_tl7ko")
+
+[node name="Respawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.34012, -19.3688)
+
+[node name="DeathPlane" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 10
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeathPlane"]
+shape = SubResource("WorldBoundaryShape3D_tfvpp")
+
+[connection signal="body_entered" from="DeathPlane" to="." method="_on_death_plane_body_entered"]

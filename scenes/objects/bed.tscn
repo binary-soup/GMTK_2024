@@ -33,7 +33,7 @@ shape = SubResource("BoxShape3D_d5gwl")
 
 [node name="GSNode" type="Node3D" parent="."]
 script = ExtResource("3_upqf4")
-GS_MAX_VAL = 1.5
+GS_MAX_VAL = 2.5
 GS_MIN_VAL = 0.2
 MAX_GRAB_SIZE = 0.3
 

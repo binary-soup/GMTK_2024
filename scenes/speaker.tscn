@@ -18,16 +18,15 @@ shape = SubResource("BoxShape3D_bpb7c")
 
 [node name="GSNode" type="Node3D" parent="CollisionShape3D"]
 script = ExtResource("2_vsnrk")
-GS_MIN_VAL = 0.25
-MAX_GRAB_SIZE = 0.4
+MAX_GRAB_SIZE = 0.6
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="CollisionShape3D"]
 transform = Transform3D(-0.165564, 0, -0.986199, 0, 1, 0, 0.986199, 0, -0.165564, 0.305265, -0.0223622, -0.0272104)
 stream = ExtResource("3_2et3l")
 volume_db = -20.0
-unit_size = 15.0
 max_db = -10.0
 autoplay = true
+max_distance = 10.0
 
 [node name="Mesh" parent="CollisionShape3D" instance=ExtResource("4_ogccu")]
 
