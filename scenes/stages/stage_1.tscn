@@ -198,6 +198,24 @@ shape = SubResource("BoxShape3D_meg5o")
 stream = ExtResource("7_8kp7d")
 volume_db = 12.0
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Cancel" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -426.0
+offset_top = -66.0
+offset_right = -21.0
+offset_bottom = -21.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Cancel Commentary: [Del]"
+
 [connection signal="body_entered" from="ThrowDemo/ThrowDeathPlane" to="." method="_on_throw_death_plane_body_entered"]
 [connection signal="body_entered" from="Commentary/CommentarryTrigger" to="." method="_on_commentarry_trigger_body_entered"]
 
